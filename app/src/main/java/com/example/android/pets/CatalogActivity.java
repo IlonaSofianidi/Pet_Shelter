@@ -18,9 +18,7 @@ package com.example.android.pets;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,22 +27,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.example.android.pets.data.PetContract;
-import com.example.android.pets.data.PetDBHelper;
-import com.example.android.pets.data.PetProvider;
 
 /**
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
     public static final String LOG_TAG = CatalogActivity.class.getSimpleName();
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
+        listView = (ListView) findViewById(R.id.listView);
+
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -58,50 +57,16 @@ public class CatalogActivity extends AppCompatActivity {
 
 
     }
+
     private void displayDatabaseInfo() {
-        Cursor cursor= getContentResolver().query(PetContract.PetEntry.CONTENT_URI,new String[] {PetContract.PetEntry._id, PetContract.PetEntry.COLUMN_NAME,
-              PetContract.PetEntry.COLUMN_BREED, PetContract.PetEntry.COLUMN_GENDER, PetContract.PetEntry.COLUMN_WEIGHT},null,null,null);
-        try {
-            // Display the number of rows in the Cursor (which reflects the number of rows in the
-            // pets table in the database).
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
-            displayView.append(PetContract.PetEntry._ID + " - " +
-                    PetContract.PetEntry.COLUMN_NAME + " - " +
-                    PetContract.PetEntry.COLUMN_BREED + " - " +
-                    PetContract.PetEntry.COLUMN_GENDER + " - " +
-                    PetContract.PetEntry.COLUMN_WEIGHT + "\n");
 
-            // Figure out the index of each column
-            int idColumnIndex = cursor.getColumnIndex(PetContract.PetEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_NAME);
-            int breedColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_BREED);
-            int genderColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_GENDER);
-            int weightColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_WEIGHT);
+        Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI, new String[]{PetContract.PetEntry._id, PetContract.PetEntry.COLUMN_NAME,
+                PetContract.PetEntry.COLUMN_BREED, PetContract.PetEntry.COLUMN_GENDER, PetContract.PetEntry.COLUMN_WEIGHT}, null, null, null);
+        PetCursorAdapter petCursorAdapter = new PetCursorAdapter(this, cursor, false);
+        listView.setAdapter(petCursorAdapter);
 
-            // Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
-                // Use that index to extract the String or Int value of the word
-                // at the current row the cursor is on.
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                String currentBreed = cursor.getString(breedColumnIndex);
-                int currentGender = cursor.getInt(genderColumnIndex);
-                int currentWeight = cursor.getInt(weightColumnIndex);
-                // Display the values from each column of the current row in the cursor in the TextView
-                displayView.append(("\n" + currentID + " - " +
-                        currentName + " - " +
-                        currentBreed + " - " +
-                        currentGender + " - " +
-                        currentWeight));
-            }
-
-        } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();
-        }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -110,21 +75,23 @@ public class CatalogActivity extends AppCompatActivity {
         return true;
     }
 
-    private void insertData(){
+    private void insertData() {
 
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PetContract.PetEntry.COLUMN_NAME,"Toto");
-        contentValues.put(PetContract.PetEntry.COLUMN_BREED,"Terrier");
+        contentValues.put(PetContract.PetEntry.COLUMN_NAME, "Toto");
+        contentValues.put(PetContract.PetEntry.COLUMN_BREED, "Terrier");
         contentValues.put(PetContract.PetEntry.COLUMN_GENDER, PetContract.PetEntry.GENDER_MALE);
-        contentValues.put(PetContract.PetEntry.COLUMN_WEIGHT,7);
+        contentValues.put(PetContract.PetEntry.COLUMN_WEIGHT, 7);
 
-        Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
-Log.v(LOG_TAG,"New row id" + ContentUris.parseId(uri));
-    }@Override
+        Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, contentValues);
+        Log.v(LOG_TAG, "New row id" + ContentUris.parseId(uri));
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-       displayDatabaseInfo();
+        displayDatabaseInfo();
     }
 
     @Override
@@ -133,8 +100,8 @@ Log.v(LOG_TAG,"New row id" + ContentUris.parseId(uri));
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-              insertData();
-              displayDatabaseInfo();
+                insertData();
+                displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
