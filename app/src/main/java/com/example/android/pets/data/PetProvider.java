@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class PetProvider extends ContentProvider {
@@ -50,6 +51,7 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown uri" + uri);
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return cursor;
     }
@@ -90,10 +92,11 @@ public class PetProvider extends ContentProvider {
      */
     private Uri insertPet(Uri uri, ContentValues contentValues) {
         int gender = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_GENDER);
-        if (contentValues.getAsString(PetContract.PetEntry.COLUMN_NAME) == null) {
+        Log.e("GENDER", gender + "");
+        if (TextUtils.isEmpty(contentValues.getAsString(PetContract.PetEntry.COLUMN_NAME))) {
             throw new IllegalArgumentException("Pet requires a name");
-        } else if (contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED) == null) {
-            throw new IllegalArgumentException("Pet requires a breed name");
+//        } else if (TextUtils.isEmpty(contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED))) {
+//            throw new IllegalArgumentException("Pet requires a breed name");
 
         } else if (contentValues.getAsInteger(PetContract.PetEntry.COLUMN_WEIGHT) < 0) {
             throw new IllegalArgumentException("Weight cannot be negative");
@@ -105,6 +108,7 @@ public class PetProvider extends ContentProvider {
             return null;
         }
 
+        getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -112,16 +116,27 @@ public class PetProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        int id = 0;
         switch (match){
             case PETS:
-                return deletePet(uri,s,strings);
+
+                id = deletePet(uri, s, strings);
+                break;
+
             case PET_ID:
                 String selection = PetContract.PetEntry._id +"=?";
                 String[] selectionArgs= new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return  deletePet(uri,selection,selectionArgs);
+                id = deletePet(uri, selection, selectionArgs);
+
+                break;
 
                 default:throw  new IllegalArgumentException("Cannot delete pet by current uri"+uri);
         }
+        if (id != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return id;
+
 
     }
     private int deletePet(Uri uri,String selection , String[] selectionArgs){
@@ -133,6 +148,7 @@ public class PetProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+
         switch (match) {
             case PETS:
                 return updatePet(uri, contentValues, s, strings);
@@ -159,12 +175,12 @@ public class PetProvider extends ContentProvider {
             }
 
         }
-        if (contentValues.containsKey(PetContract.PetEntry.COLUMN_BREED)) {
-            String breed = contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED);
-            if (breed == null) {
-                throw new IllegalArgumentException("Pet requires a breed name");
-            }
-        }
+//        if (contentValues.containsKey(PetContract.PetEntry.COLUMN_BREED)) {
+//            String breed = contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED);
+//            if (breed == null) {
+//                throw new IllegalArgumentException("Pet requires a breed name");
+//            }
+//        }
         if (contentValues.containsKey(PetContract.PetEntry.COLUMN_WEIGHT)) {
             int weight = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_WEIGHT);
             if (weight < 0) {
@@ -172,6 +188,10 @@ public class PetProvider extends ContentProvider {
             }
         }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        return db.update(PetContract.PetEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+        int rowsUpdated = db.update(PetContract.PetEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 }

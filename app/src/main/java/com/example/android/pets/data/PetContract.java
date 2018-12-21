@@ -21,14 +21,14 @@ public final class PetContract {
          * The MIME type of the {@link #CONTENT_URI} for a single pet.
          */
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PETS;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + "/#" + PATH_PETS;
 
         public static final String TABLE_NAME="pets";
         public final static String _id = BaseColumns._ID;
         public static final String COLUMN_NAME="name";
         public static final String COLUMN_BREED="breed";
         public static final String COLUMN_GENDER="gender";
-        public static final String COLUMN_WEIGHT="gender";
+        public static final String COLUMN_WEIGHT = "weight";
 
         public static final int GENDER_MALE=1;
         public static final int GENDER_FEMALE=2;
