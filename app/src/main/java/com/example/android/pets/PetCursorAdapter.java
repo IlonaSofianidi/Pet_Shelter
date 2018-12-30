@@ -55,7 +55,5 @@ public class PetCursorAdapter extends CursorAdapter {
             summary_textView.setText(breed);
         }
         name_textView.setText(name);
-
-
     }
 }

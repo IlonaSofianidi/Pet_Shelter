@@ -52,7 +52,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         View emptyView = findViewById(R.id.empty_view);
         listView.setEmptyView(emptyView);
 
-
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +64,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         petCursorAdapter = new PetCursorAdapter(this, null, false);
         listView.setAdapter(petCursorAdapter);
         getLoaderManager().initLoader(PET_LOADER_ID, null, this);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -75,12 +73,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
-
-
     }
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -88,23 +81,16 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
-
     private void insertData() {
-
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(PetContract.PetEntry.COLUMN_NAME, "Toto");
         contentValues.put(PetContract.PetEntry.COLUMN_BREED, "Terrier");
         contentValues.put(PetContract.PetEntry.COLUMN_GENDER, PetContract.PetEntry.GENDER_MALE);
         contentValues.put(PetContract.PetEntry.COLUMN_WEIGHT, 5);
 
-
         Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, contentValues);
         Log.v(LOG_TAG, "New row id" + ContentUris.parseId(uri));
     }
-
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
@@ -145,8 +131,4 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
-
-
-
-
 }

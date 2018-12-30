@@ -67,7 +67,6 @@ public class PetProvider extends ContentProvider {
                 return PetContract.PetEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
-
         }
     }
 
@@ -175,12 +174,6 @@ public class PetProvider extends ContentProvider {
             }
 
         }
-//        if (contentValues.containsKey(PetContract.PetEntry.COLUMN_BREED)) {
-//            String breed = contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED);
-//            if (breed == null) {
-//                throw new IllegalArgumentException("Pet requires a breed name");
-//            }
-//        }
         if (contentValues.containsKey(PetContract.PetEntry.COLUMN_WEIGHT)) {
             int weight = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_WEIGHT);
             if (weight < 0) {

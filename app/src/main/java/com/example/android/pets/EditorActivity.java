@@ -80,7 +80,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             return false;
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,10 +96,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mWeightEditText.setOnTouchListener(onTouchListener);
         mGenderSpinner.setOnTouchListener(onTouchListener);
 
-
         currentUri = getIntent().getData();
-
-
         if (currentUri != null) {
             setTitle("Edit Pet");
             invalidateOptionsMenu();
@@ -109,11 +105,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle("Add Pet");
         }
         setupSpinner();
-
-
     }
-
-
     /**
      * Insert Pet in the db.
      */
@@ -158,7 +150,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 Toast.makeText(this, "Pet updated", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     /**
@@ -238,7 +229,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 }
             }
         });
-
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -358,7 +348,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 default:
                     mGenderSpinner.setSelection(0);
                     break;
-
             }
         }
     }
@@ -366,10 +355,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-//        mNameEditText.setText("");
-//        mBreedEditText.setText("");
-//        mWeightEditText.setText(0);
-//        mGenderSpinner.setSelection(0);
-
+        mNameEditText.setText("");
+        mBreedEditText.setText("");
+        mWeightEditText.setText(0);
+        mGenderSpinner.setSelection(0);
     }
 }

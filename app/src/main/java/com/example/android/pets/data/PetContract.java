@@ -45,7 +45,5 @@ public final class PetContract {
             }
             return false;
         }
-
     }
-
 }
