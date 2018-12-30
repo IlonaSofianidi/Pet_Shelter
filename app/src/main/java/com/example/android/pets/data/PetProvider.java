@@ -74,14 +74,12 @@ public class PetProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
-
         switch (match) {
             case PETS:
                 return insertPet(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supportet for this uri" + uri);
         }
-
     }
 
     /**
@@ -112,9 +110,8 @@ public class PetProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        int id = 0;
+        int id;
         switch (match){
             case PETS:
 
