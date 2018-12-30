@@ -47,7 +47,6 @@ public class PetProvider extends ContentProvider {
                         PetContract.PetEntry._id + " =?", new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null, null, s1);
                 break;
-
             default:
                 throw new IllegalArgumentException("Cannot query unknown uri" + uri);
         }
@@ -91,9 +90,6 @@ public class PetProvider extends ContentProvider {
         Log.e("GENDER", gender + "");
         if (TextUtils.isEmpty(contentValues.getAsString(PetContract.PetEntry.COLUMN_NAME))) {
             throw new IllegalArgumentException("Pet requires a name");
-//        } else if (TextUtils.isEmpty(contentValues.getAsString(PetContract.PetEntry.COLUMN_BREED))) {
-//            throw new IllegalArgumentException("Pet requires a breed name");
-
         } else if (contentValues.getAsInteger(PetContract.PetEntry.COLUMN_WEIGHT) < 0) {
             throw new IllegalArgumentException("Weight cannot be negative");
         }
@@ -103,7 +99,6 @@ public class PetProvider extends ContentProvider {
             Log.e(LOG_TAG, "Failed to insert raw for " + uri);
             return null;
         }
-
         getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
@@ -114,25 +109,20 @@ public class PetProvider extends ContentProvider {
         int id;
         switch (match){
             case PETS:
-
                 id = deletePet(uri, s, strings);
                 break;
-
             case PET_ID:
                 String selection = PetContract.PetEntry._id +"=?";
                 String[] selectionArgs= new String[]{String.valueOf(ContentUris.parseId(uri))};
                 id = deletePet(uri, selection, selectionArgs);
-
                 break;
-
-                default:throw  new IllegalArgumentException("Cannot delete pet by current uri"+uri);
+            default:
+                throw new IllegalArgumentException("Cannot delete pet by current uri" + uri);
         }
         if (id != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return id;
-
-
     }
     private int deletePet(Uri uri,String selection , String[] selectionArgs){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -141,7 +131,6 @@ public class PetProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
@@ -155,7 +144,6 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Failed to update current uri" + uri);
         }
-
     }
 
     private int updatePet(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
@@ -168,7 +156,6 @@ public class PetProvider extends ContentProvider {
             if (name == null) {
                 throw new IllegalArgumentException("Pet requires a name");
             }
-
         }
         if (contentValues.containsKey(PetContract.PetEntry.COLUMN_WEIGHT)) {
             int weight = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_WEIGHT);
