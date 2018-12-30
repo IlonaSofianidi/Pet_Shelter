@@ -34,7 +34,7 @@ public class PetProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = null;
+        Cursor cursor;
 
         int match = sUriMatcher.match(uri);
         Log.v(LOG_TAG, "match is " + match);
@@ -73,7 +73,6 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
